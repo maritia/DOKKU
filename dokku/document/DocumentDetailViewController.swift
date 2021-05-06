@@ -9,15 +9,17 @@ import UIKit
 
 class DocumentDetailViewController: UIViewController {
 
-    @IBOutlet weak var documentDescription: UITextView!
     @IBOutlet weak var documentFile: UIImageView!
+    @IBOutlet weak var documentDesc: UILabel!
     
     var document: DocumentModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        documentDescription.text = document?.desc
+        documentDesc.text = document?.desc
         self.title = document?.title
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(playTapped))
+
         do {
             let docDir = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             print("docDir = \(docDir)")
@@ -45,6 +47,16 @@ class DocumentDetailViewController: UIViewController {
                     print("data nil")
                 }
             }
+//            do {
+//                let imageUrlTemp = "file:///var/mobile/Containers/Data/Application/C39F6664-7E60-4600-AE2B-007AFC134A35/Documents/7267FF04-9AC7-41BB-9C26-84DC4AB14258.heic"
+//                print(imageUrlTemp)
+//                let url = URL.init(fileURLWithPath: imageUrlTemp)
+//                let imageData:NSData = try NSData(contentsOf: url)
+//                self.documentFile.image = UIImage(data: imageData as Data)
+//            } catch {
+//                print("Something wrong")
+//            }
+
 //            self.localFileURL(for: nil, options: FetchableImageOptions(storeInCachesDirectory: true, allowLocalStorage: true, customFileName: document?.file))
 //                self.fetchImage(from: imageURL.path) { (data) in
 //                    DispatchQueue.main.async {
@@ -57,6 +69,13 @@ class DocumentDetailViewController: UIViewController {
         } catch {
             print("error load docdir")
         }
+    }
+    @objc
+    func playTapped() {
+        let items = [self.documentFile.image]
+        
+        let ac = UIActivityViewController(activityItems: items as [Any], applicationActivities: nil)
+        present(ac, animated: true)
     }
     
 }

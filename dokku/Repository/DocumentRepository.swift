@@ -108,25 +108,23 @@ class DocumentRepository {
         }
     }
 
-//    func deleteCard(id: String, completion: @escaping (_ status: Bool) -> ()) {
-//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-//            print("app delegate nil")
-//            return
-//        }
-//
-//        let managedContext = appDelegate.persistentContainer.viewContext
-//        let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Card")
-//        fetchRequest.predicate = NSPredicate(format: "id = %@", id)
-//        do {
-//            let dataToDelete = try managedContext.fetch(fetchRequest)[0] as! NSManagedObject
-//            managedContext.delete(dataToDelete)
-//            try managedContext.save()
-//            completion(true)
-//        }catch let err {
-//            print("err = \(err.localizedDescription)")
-//            completion(false)
-//        }
-//    }
+    func deleteDocument(id: String) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            print("app delegate nil")
+            return
+        }
+
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Document")
+        fetchRequest.predicate = NSPredicate(format: "id = %@", id)
+        do {
+            let dataToDelete = try managedContext.fetch(fetchRequest)[0] as! NSManagedObject
+            managedContext.delete(dataToDelete)
+            try managedContext.save()
+        }catch let err {
+            print("err = \(err.localizedDescription)")
+        }
+    }
 //
 //    func removeAllCard(completion: @escaping (_ status: Bool) -> ()) {
 //        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {

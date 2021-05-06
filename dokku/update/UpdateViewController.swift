@@ -18,6 +18,7 @@ class UpdateViewController: UIViewController {
     @IBOutlet weak var inputTitle: UITextField!
     @IBOutlet weak var inputDesc: UITextField!
     @IBOutlet weak var imageDocument: UIImageView!
+    @IBOutlet weak var addImageButton: UIButton!
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var imagePicker: UIImagePickerController!
@@ -28,6 +29,14 @@ class UpdateViewController: UIViewController {
         super.viewDidLoad()
         inputTitle.text = document?.title
         inputDesc.text = document?.desc
+        addImageButton.imageEdgeInsets = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
     
     @IBAction func saveDocument(_ sender: Any) {
@@ -89,6 +98,23 @@ extension UpdateViewController: UINavigationControllerDelegate, UIImagePickerCon
         guard let selectedImage = info[.originalImage] as? UIImage else {
             print("Image not found!")
             return
+        }
+        let fileManager = FileManager.default
+        let paths = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent(imageName)
+        let imageData = selectedImage.pngData()
+        fileManager.createFile(atPath: paths as String, contents: imageData, attributes: nil)
+
+
+        //Retrieving the image
+        let nsDocumentDirectory = FileManager.SearchPathDirectory.documentDirectory
+        let nsUserDomainMask    = FileManager.SearchPathDomainMask.userDomainMask
+        let paths2               = NSSearchPathForDirectoriesInDomains(nsDocumentDirectory, nsUserDomainMask, true)
+        if let dirPath = paths2.first {
+            let imageURL = URL(fileURLWithPath: dirPath).appendingPathComponent(imageName)
+            if let imageRetrieved = UIImage(contentsOfFile: imageURL.path) {
+                //do whatever you want with this image
+                print(imageRetrieved)
+            }
         }
         imageDocument.image = selectedImage
     }
